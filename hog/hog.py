@@ -37,14 +37,21 @@ def free_bacon(opponent_score):
     # BEGIN PROBLEM 2
     units = opponent_score % 10
     tens = (opponent_score - units)//10
-    return max(units,tens)+1
+    if is_prime(max(units,tens)+1):
+        return next_prime(max(units,tens)+1)
+    else:
+        return max(units,tens)+1
     # END PROBLEM 2
 
 # Write your prime functions here!
 def is_prime(x):
     input_num = x
+    if input_num == 1 or input_num == 0:
+        return False
+    if input_num == 2:
+        return True
     for num in range(2,x):
-        if input_num % num == 0 and input_num == 1:
+        if input_num % num == 0:
             return False
     return True
 
@@ -73,8 +80,10 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     else:
         current_score = roll_dice(num_rolls,dice)
         if is_prime(current_score):
+            # print('is_prime == ',next_prime(current_score))
             return next_prime(current_score)
         else:
+            # print('not_prime == ',current_score)
             return current_score
     # END PROBLEM 2
 
@@ -109,10 +118,12 @@ def is_swap(score):
     """
     # BEGIN PROBLEM 4
     units = score % 10
-    tens = (score - units)//10
-    hundreds = (score - 10 * tens - units)//10
+    tens = ((score - units)//10) % 10
+    hundreds = (score - 10 * tens - units)//100
 
-    zzn = (not hundreds)and(not tens)and(units)
+    # print(units,tens,hundreds)
+
+    zzn = (not hundreds)and(not tens)
     znn = (not hundreds)and(tens and units)and(tens==units)
     nnn = (hundreds and tens and units)and(hundreds==tens)and(tens==units)
 
@@ -137,8 +148,11 @@ def one_turn(player,strategy,score_current,score_opposite):
     num_rolls = strategy(score_current,score_opposite)
     max_num_roll = max_dice(score_current, score_opposite)
     num_rolls = min(max_num_roll,num_rolls)
+    # print('num_rolls:',num_rolls)
     dice = select_dice(score_current,score_opposite)
-    score_current = take_turn(num_rolls,score_opposite,dice)
+    # print('before_add_this_turn',score_current)
+    score_current = score_current + take_turn(num_rolls,score_opposite,dice)
+    # print('after_add_this_turn',score_current)
     if is_swap(score_current):
         temp = score_current
         score_current = score_opposite
@@ -165,11 +179,20 @@ def play(strategy0, strategy1, score0=0, score1=0, goal=GOAL_SCORE):
     while score0 < goal and score1 < goal:
         if not player:
             score0,score1,player = one_turn(player,strategy0,score0,score1)
+            # print('score0:',score0,'score1:',score1)
         else:
             score1,score0,player = one_turn(player,strategy1,score1,score0)
+            # print('score0:',score0,'score1:',score1)
     # END PROBLEM 5
     return score0, score1
 
+if __name__ == '__main__':
+    import hog
+    hog.four_sided = hog.make_test_dice(1)
+    hog.six_sided = hog.make_test_dice(3)
+    always = hog.always_roll
+    s0, s1 = hog.play(always(0), always(0),score0=98,score1=1)
+    print(s0,s1)
 
 #######################
 # Phase 2: Strategies #
