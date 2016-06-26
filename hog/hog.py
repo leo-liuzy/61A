@@ -9,7 +9,6 @@ GOAL_SCORE = 100  # The goal of Hog is to score 100 points.
 ######################
 # Phase 1: Simulator #
 ######################
-
 def roll_dice(num_rolls, dice=six_sided):
     """Simulate rolling the DICE exactly NUM_ROLLS>0 times. Return the sum of
     the outcomes unless any of the outcomes is 1. In that case, return 1.
@@ -18,17 +17,43 @@ def roll_dice(num_rolls, dice=six_sided):
     assert type(num_rolls) == int, 'num_rolls must be an integer.'
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
-    "*** REPLACE THIS LINE ***"
+    dice_sum = 0
+    have_one = False
+    while num_rolls > 0:
+        dice_num = dice()
+        if dice_num == 1:
+            have_one = True
+        else:
+            dice_sum += dice_num
+        num_rolls -= 1
+    if have_one:
+        dice_sum = 1
+    return dice_sum
     # END PROBLEM 1
 
 
 def free_bacon(opponent_score):
     """Return the points scored from rolling 0 dice (Free Bacon)."""
     # BEGIN PROBLEM 2
-    "*** REPLACE THIS LINE ***"
+    units = opponent_score % 10
+    tens = (opponent_score - units)//10
+    return max(units,tens)+1
     # END PROBLEM 2
 
 # Write your prime functions here!
+def is_prime(x):
+    input_num = x
+    for num in range(2,x):
+        if input_num % num == 0 and input_num == 1:
+            return False
+    return True
+
+def next_prime(x):
+    x += 1
+    while not is_prime(x):
+        x += 1
+    return x
+
 
 def take_turn(num_rolls, opponent_score, dice=six_sided):
     """Simulate a turn rolling NUM_ROLLS dice, which may be 0 (Free Bacon).
@@ -43,7 +68,14 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'
     assert opponent_score < 100, 'The game should be over.'
     # BEGIN PROBLEM 2
-    "*** REPLACE THIS LINE ***"
+    if num_rolls == 0:
+        return free_bacon(opponent_score)
+    else:
+        current_score = roll_dice(num_rolls,dice)
+        if is_prime(current_score):
+            return next_prime(current_score)
+        else:
+            return current_score
     # END PROBLEM 2
 
 
@@ -52,7 +84,10 @@ def select_dice(score, opponent_score):
     multiple of 7, in which case select four-sided dice (Hog Wild).
     """
     # BEGIN PROBLEM 3
-    "*** REPLACE THIS LINE ***"
+    if (score + opponent_score) % 7 == 0:
+        return four_sided
+    else:
+        return six_sided
     # END PROBLEM 3
 
 def max_dice(score, opponent_score):
@@ -61,7 +96,11 @@ def max_dice(score, opponent_score):
     OPPONENT_SCORE ends in a 7, in which case the player can roll at most 1.
     """
     # BEGIN PROBLEM 3
-    "*** REPLACE THIS LINE ***"
+    if (score + opponent_score) % 10 == 7:
+        return 1
+    else:
+        return 10
+    
     # END PROBLEM 3
 
 
@@ -69,8 +108,18 @@ def is_swap(score):
     """Returns whether the SCORE contains only one unique digit, such as 22.
     """
     # BEGIN PROBLEM 4
-    "*** REPLACE THIS LINE ***"
-    # END PROBLEM 4
+    units = score % 10
+    tens = (score - units)//10
+    hundreds = (score - 10 * tens - units)//10
+
+    zzn = (not hundreds)and(not tens)and(units)
+    znn = (not hundreds)and(tens and units)and(tens==units)
+    nnn = (hundreds and tens and units)and(hundreds==tens)and(tens==units)
+
+    if zzn or znn or nnn:
+        return True
+    else:
+        return False 
 
 
 def other(player):
@@ -82,6 +131,20 @@ def other(player):
     0
     """
     return 1 - player
+
+
+def one_turn(player,strategy,score_current,score_opposite):
+    num_rolls = strategy(score_current,score_opposite)
+    max_num_roll = max_dice(score_current, score_opposite)
+    num_rolls = min(max_num_roll,num_rolls)
+    dice = select_dice(score_current,score_opposite)
+    score_current = take_turn(num_rolls,score_opposite,dice)
+    if is_swap(score_current):
+        temp = score_current
+        score_current = score_opposite
+        score_opposite = temp
+    player = other(player)
+    return score_current,score_opposite,player
 
 
 def play(strategy0, strategy1, score0=0, score1=0, goal=GOAL_SCORE):
@@ -99,7 +162,11 @@ def play(strategy0, strategy1, score0=0, score1=0, goal=GOAL_SCORE):
     """
     player = 0  # Which player is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
-    "*** REPLACE THIS LINE ***"
+    while score0 < goal and score1 < goal:
+        if not player:
+            score0,score1,player = one_turn(player,strategy0,score0,score1)
+        else:
+            score1,score0,player = one_turn(player,strategy1,score1,score0)
     # END PROBLEM 5
     return score0, score1
 

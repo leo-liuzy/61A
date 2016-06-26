@@ -1,4 +1,4 @@
-#CS 61A assignment-The game of Hog
+#CS 61A Assignment-The game of Hog
 
 ##Game Rules:
 
