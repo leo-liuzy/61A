@@ -392,7 +392,6 @@ def swap_strategy(score, opponent_score, margin=5, num_rolls=6):
         return num_rolls
     if select_dice(score+1,opponent_score) == 1:
         return num_rolls
-    
     else:
         return num_rolls
     # END PROBLEM 10
