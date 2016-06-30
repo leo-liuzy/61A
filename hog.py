@@ -384,19 +384,16 @@ def swap_strategy(score, opponent_score, margin=5, num_rolls=6):
     """
     # BEGIN PROBLEM 10
     
-    if is_swap(score + free_bacon(opponent_score)) and score < 92 and opponent_score > score + free_bacon(opponent_score):
+    if is_swap(score + free_bacon(opponent_score)) and opponent_score > score + free_bacon(opponent_score):
         return 0
     elif not is_swap(score + free_bacon(opponent_score)) and free_bacon(opponent_score) > margin-1:
         return 0
-    if max_dice(score+1,opponent_score) == 1:
-        return num_rolls
-    if select_dice(score+1,opponent_score) == 1:
-        return num_rolls
     else:
         return num_rolls
     # END PROBLEM 10
 
-
+four_average = make_averaged(four_sided)()
+six_average = make_averaged(six_sided)()
 
 @check_strategy
 def final_strategy(score, opponent_score):
@@ -404,7 +401,18 @@ def final_strategy(score, opponent_score):
     default: swap_strategy
     *** YOUR DESCRIPTION HERE ***
     """
+    # print('four:',make_averaged(four_sided)(),'six:',make_averaged(six_sided)())
     roll_nums = swap_strategy(score,opponent_score)
+    if max_dice(score,opponent_score) == 1:
+        roll_nums = swap_strategy(score,opponent_score,six_average)
+    elif select_dice(score,opponent_score) == four_sided:
+        roll_nums = swap_strategy(score,opponent_score,four_average)
+    elif (score + opponent_score) % 10 == 6 and opponent_score > 90:
+        roll_nums = 10        
+    elif (score == 10 or 21 or 32 or 43 or 54 or 65 or 76 or 87) and (opponent_score > score):
+        roll_nums = 10
+    elif ((score + free_bacon(opponent_score) )> 99) and ((score +free_bacon(opponent_score)) != 111):
+        roll_nums == 0
     return roll_nums
 
     # END PROBLEM 10
