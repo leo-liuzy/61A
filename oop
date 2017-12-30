@@ -1,0 +1,47 @@
+class name:
+    
+    def __init__(self, Title, FirstName, Surname):
+        self.__Title = Title
+        self.__FirstName = FirstName
+        self.__Surname = Surname
+    
+    def DisplayName(self):
+        print(self.__Title, " ", self.__FirstName," ",self.__Surname)
+        print(self.__Surname, " ", self.__FirstName)
+        
+
+class staff:
+    
+    def __init__(self, name, ID):
+        self.__name = name
+        self.__id = ID
+        
+    def show():
+        print("the staff is", self.__name.DisplayName(), "with ID", self.__id)
+
+
+class Teacher(staff):
+    
+    def __init__(self, name, ID, classroom, formGroup):
+        staff.__init__(self, name, ID)
+        self.__classroom = classroom
+        self.__formGroup = formGroup
+    
+    def show():
+        staff.show()
+        print("he has a classroom", self.__classroom, "and a form group ", self.__formGroup)
+
+class SupportStaff(staff):
+    def __init__(self, name, ID, Type, department):
+        staff.__init__(self, name, ID)
+        self.__Type = Type
+        self.__department = department
+
+    def show():
+        staff.show()
+        print("he is", self.__Type, "and belongs to ", self.__department)
+
+ChenNan = name("Mr", "Nan", "Chen")
+staff1 = Teacher(ChenNan, 3111, 201, "hhh")
+staff2 = SupportStaff(ChenNan, 3111, "sweeper", "hhh")
+

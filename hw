@@ -1,0 +1,31 @@
+class driver:
+    def __init__(self, age, speed, penalized):
+        self.__age = age
+        self.__speed = speed
+        self.__penalized = False
+    def getAge(self):
+        return self.__age
+
+    def setAge(self, age):
+        self.__age = age
+
+    def getSpeed(self):
+        return self.__speed
+
+    def setSpeed(self, speed):
+        self.__age = speed
+    
+    def getStatus(self):
+        return self.__penalized
+
+    def setStatus(self, penalized):
+        self.__penalized = penalized
+
+
+
+Nan = driver(14, 130)
+
+if Nan.getAge() < 18 or Nan.getSpeed() > 120:
+    Nan.setStatus(True)
+else:
+    Nan.setStatus(False)

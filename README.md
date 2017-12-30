@@ -8,7 +8,3 @@
 4. **Hog Wild**. If the sum of both players' total scores is a multiple of seven (e.g., 14, 21, 35), then the current player rolls four-sided dice instead of the usual six-sided dice.
 5. **Hog Tied**. If the sum of both players' scores ends in a seven (e.g., 17, 27, 57), then the current player can roll at most one dice.
 6. **Swine Swap**. After the turn score is added, if the current player's total score contains only one unique digit, the players swap total scores.
-
-
-
-
